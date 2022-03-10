@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot
+  labels:
+    app: myapp
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      name: spring-boot-pod
+      labels:
+        app: myapp
+        type: rest-api
+    spec:
+      containers:
+      - name: spring-boot-api
+        image: ahamadmohammad/maven-jdk:1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 8081
+        env:
+          - name: MYSQL_URL
+            value: jdbc:mysql://mysql-db:3306/$MYSQL_DATABASE?createDatabaseIfNotExist=true
+        imagePullPolicy: Always

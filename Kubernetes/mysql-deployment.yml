@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp 
+      type: mysql-db
+  template:
+    metadata:
+      name: db-pod
+      labels:
+        app: myapp
+        type: mysql-db
+    spec:
+      containers:
+        - name: mysqldb
+          image: mysql:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+              - containerPort: 3306
+
+          volumeMounts:
+            - name: storage
+              mountPath: /data/db
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
